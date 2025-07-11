@@ -1,0 +1,15 @@
+POST /api/tasks → Create a new task
+
+PUT /api/tasks/:id/status → Update task status
+
+GET /api/tasks → Get all tasks
+
+POST /api/progress → Add a progress update
+
+GET /api/progress/:internId → Get all progress updates by an intern
+
+POST /api/attendance/checkin → Check-in
+
+PUT /api/attendance/checkout/:id → Check-out
+
+GET /api/attendance/:internId → View attendance history

@@ -11,7 +11,7 @@ export const addUser = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-  const { id } = req.params; // 🔧 FIXED: use params, not body
+  const { id } = req.params; 
   const user = await getUserByPk(id);
 
   if (!user) {
