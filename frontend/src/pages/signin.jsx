@@ -1,7 +1,10 @@
 import { useState ,useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 export function SignIn() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -35,7 +38,12 @@ export function SignIn() {
       const data = await res.json();
 
       if (res.ok) {
-        
+          login({
+        token: data.token,
+        role: data.user.role,
+        username: data.user.username,
+        remember: formData.remember,
+      });
         if (formData.remember) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("id", data.user.id);

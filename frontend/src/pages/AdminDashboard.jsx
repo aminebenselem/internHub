@@ -1,7 +1,15 @@
 
-
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useState,useEffect } from "react";
 export function AdminDashboard() {
+   const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/signin');
+  };
 const token = localStorage.getItem('token') ||sessionStorage.getItem('token')
  const [stats,setStats] =useState({})
 
@@ -17,11 +25,7 @@ const token = localStorage.getItem('token') ||sessionStorage.getItem('token')
     file:null
   });
 const [interns, setInterns] = useState([]);
-const handleLogout =()=>{
-  localStorage.clear()
-  sessionStorage.clear()
-  window.location.href="/signin"
-}
+
   useEffect(()=>{
     const getStats = async ()=>{
       try{
@@ -170,7 +174,7 @@ formData.append('file',task.file)}
                    <td className="p-2">{new Date(intern.createdAt).toISOString().split('T')[0]}</td>
                   
                   <td className="p-2">
-                    <button onClick={()=>window.location.href=`/admin/${intern.id}`} className="text-blue-600 text-sm hover:underline">View</button>
+                    <button onClick={()=>navigate(`/admin/${intern.id}`)} className="text-blue-600 text-sm hover:underline">View</button>
                   </td>
                 </tr>
               ))}

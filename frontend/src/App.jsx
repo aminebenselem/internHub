@@ -1,26 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 
-import {AdminDashboard} from './pages/AdminDashboard';
-import {InternDashboard} from './pages/InternDashboard';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { InternDashboard } from './pages/InternDashboard';
 import { SignIn } from './pages/signin';
 import { SignUp } from './pages/signup';
-import {InternDetails} from './pages/InternDetails';
+import { InternDetails } from './pages/InternDetails';
 import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
 
 function App() {
-  const [role, setRole] = useState(null); // null = not loaded yet
-
-  useEffect(() => {
-    const savedRole = localStorage.getItem('role') || sessionStorage.getItem('role');
-    setRole(savedRole); // will be "admin", "intern", or null
-  }, []);
-
+  const { role } = useAuth();
   const isAdmin = role === 'admin';
   const isIntern = role === 'intern';
-
-  
 
   return (
     <Router>

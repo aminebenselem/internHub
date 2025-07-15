@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthContext';
+
 export function InternDashboard() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/signin');
+  };
   const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   const internId = localStorage.getItem("id")||  sessionStorage.getItem("id");
   const username = localStorage.getItem('username') || sessionStorage.getItem('username')
@@ -64,11 +72,7 @@ console.error(error)
 getTasks()
 
   },[])
-const handleLogout =()=>{
-  localStorage.clear()
-  sessionStorage.clear()
-  window.location.href="/signin"
-}
+
  const updateStatus = async (id, newStatus) => {
   try {
     // Optimistically update UI
