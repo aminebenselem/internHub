@@ -10,19 +10,13 @@ const auth = async (req, res, next) => {
       token = authHeader.substring(7);
     }
     
-    // Fallback to cookie if no header token
-    if (!token && req.cookies && req.cookies.auth_token) {
-      token = req.cookies.auth_token;
-    }
+  
     
     if (!token) {
-      console.log('Auth middleware: No token provided');
       return res.status(401).json({ message: 'No token provided' });
     }
 
-    console.log('Auth middleware: Token found, verifying...');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     
     const user = await User.findByPk(decoded.id, {
   attributes: { exclude: ['password'] }
@@ -43,14 +37,48 @@ const auth = async (req, res, next) => {
 };
 
 const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      console.log(`Authorization failed: User role ${req.user.role} not in allowed roles [${roles.join(', ')}]`);
-      return res.status(403).json({ message: 'Access denied' });
+  return async (req, res, next) => {
+    try {
+      let token;
+
+      // Get token from Authorization header
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+
+      
+
+      if (!token) {
+        console.log('Auth middleware: No token provided');
+        return res.status(401).json({ message: 'No token provided' });
+      }
+
+      // Verify token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded JWT:', decoded);
+
+      // Fetch user (exclude password)
+      const user = await User.findByPk(decoded.id, {
+        attributes: { exclude: ['password'] }
+      });
+
+      if (!user) {
+        return res.status(401).json({ message: 'User not found' });
+      }
+
+      // Attach user to request
+      req.user = user;
+
+      // Role check
+      if (!roles.includes(user.role)) {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+
+      next();
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid token' });
     }
-    console.log(`Authorization successful: User role ${req.user.role} is authorized`);
-    next();
   };
 };
-
 export { auth, authorize };

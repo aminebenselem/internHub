@@ -8,7 +8,8 @@ const generateToken = (user) => {
     {
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
+      username:user.username
     },
     process.env.JWT_SECRET,
     {
@@ -28,7 +29,7 @@ const register = async (req, res) => {
 
     const { email, password, username, role } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -70,7 +71,7 @@ const login = async (req, res) => {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -83,7 +84,7 @@ const login = async (req, res) => {
     const token = generateToken(user);
 
     const userResponse = {
-      id: user._id,
+      id: user.id,
       email: user.email,
       username: user.username,
       role: user.role,

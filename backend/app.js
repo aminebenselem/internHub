@@ -11,11 +11,18 @@ import './models/user.model.js';
 import './models/task.model.js';
 import './models/progress.model.js';
 import './models/attendance.model.js'; 
+import cors from 'cors';
+
+import path from 'path';
+
+
 
 dotenv.config();
 const app = express();
+app.use(cors());
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);

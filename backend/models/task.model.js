@@ -22,7 +22,12 @@ const Task = sequelize.define('Task', {
     type: DataTypes.ENUM('pending', 'in-progress', 'completed'),
     defaultValue: 'pending',
   },
+  file: {
+    type: DataTypes.STRING, // Will store the uploaded file path or name
+    allowNull: true,
+  },
 });
+
 
 //  Assigned to Intern
 Task.belongsTo(User, { foreignKey: 'assignedTo', as: 'intern' });
